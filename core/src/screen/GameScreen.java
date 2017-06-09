@@ -1,7 +1,6 @@
 package screen;
 
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Logger;
@@ -11,6 +10,7 @@ import config.GameConfig;
 import entity.Player;
 import util.GdxUtils;
 import util.ViewportUtils;
+import util.debug.DebugCameraController;
 
 public class GameScreen implements Screen {
     private static final Logger LOGGER = new Logger(GameScreen.class.getName(), Logger.DEBUG);
@@ -20,6 +20,7 @@ public class GameScreen implements Screen {
     private ShapeRenderer renderer;
 
     private Player player;
+    private DebugCameraController debugCameraController;
 
     @Override
     public void show() {
@@ -30,22 +31,48 @@ public class GameScreen implements Screen {
         player = new Player();
 
         // calculate position
-        float startPlayerX= GameConfig.WORLD_WIDTH / 2;
-        float startPlayerY= 1;
+//        float startPlayerX = GameConfig.WORLD_WIDTH / 2;
+//        float startPlayerY = 1;
+
+        float startPlayerX = 12;
+        float startPlayerY = 12;
 
         // position player
         player.setPosition(startPlayerX, startPlayerY);
+
+        debugCameraController = new DebugCameraController();
+        debugCameraController.setStartPosition(GameConfig.WORLD_CENTERX, GameConfig.WORLD_CENTERY);
     }
 
     @Override
     public void render(float deltaTime) {
+        debugCameraController.handleDebugInput(deltaTime);
+        debugCameraController.applyTo(camera);
+
+        // update delta time
+        update(deltaTime);
+
+        // clear screen
         GdxUtils.clearScreen();
 
+        // render debug graphics
         renderDebug();
+
+
         //batch.setProjectionMatrix(camera.combined);
         //batch.begin();
 //        draw();
 //        batch.end();
+    }
+
+    private void update(float deltaTime) {
+        updatePLayer();
+    }
+
+
+    private void updatePLayer() {
+        //LOGGER.debug("playerX: " + player.getX() + " playerY: " + player.getY());
+        player.update();
     }
 
     @Override

@@ -14,4 +14,10 @@ public class ObstacleAvoidGame extends Game {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         setScreen(new GameScreen());
     }
+
+    @Override
+    public void dispose() {
+        // dispose the actual screen object
+        getScreen().dispose();
+    }
 }

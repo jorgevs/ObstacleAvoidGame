@@ -11,27 +11,27 @@ public class ViewportUtils {
     private static final int DEFAULT_CELL_SIZE = 1;
 
 
-    public static void drawGrid(Viewport viewport, ShapeRenderer renderer){
+    public static void drawGrid(Viewport viewport, ShapeRenderer renderer) {
         drawGrid(viewport, renderer, DEFAULT_CELL_SIZE);
     }
 
-    public static void drawGrid(Viewport viewport, ShapeRenderer renderer, int cellSize){
+    public static void drawGrid(Viewport viewport, ShapeRenderer renderer, int cellSize) {
         // validate parameters/arguments
-        if(viewport == null){
+        if (viewport == null) {
             throw new IllegalArgumentException("viewport parameter is required.");
         }
-        if(renderer == null){
+        if (renderer == null) {
             throw new IllegalArgumentException("rendered parameter is required.");
         }
-        if(cellSize < DEFAULT_CELL_SIZE){
+        if (cellSize < DEFAULT_CELL_SIZE) {
             cellSize = DEFAULT_CELL_SIZE;
         }
 
         // copy old color from render
         Color oldColor = new Color(renderer.getColor());
 
-        int worldWidth = (int)viewport.getWorldWidth();
-        int worldHeight = (int)viewport.getWorldHeight();
+        int worldWidth = (int) viewport.getWorldWidth();
+        int worldHeight = (int) viewport.getWorldHeight();
 
         int doubleWorldWidth = worldWidth * 2;
         int doubleWorldHeight = worldHeight * 2;
@@ -42,13 +42,13 @@ public class ViewportUtils {
         renderer.setColor(Color.WHITE);
 
         // draw vertical lines
-        for (int x = -doubleWorldWidth; x < doubleWorldWidth; x+=cellSize) {
+        for (int x = -doubleWorldWidth; x <= doubleWorldWidth; x += cellSize) {
             renderer.line(x, -doubleWorldHeight, x, doubleWorldHeight);
         }
 
         // draw horizontal lines
-        for (int y = -doubleWorldHeight; y < doubleWorldHeight; y+=cellSize) {
-            renderer.line(-doubleWorldHeight, y, doubleWorldHeight, y);
+        for (int y = -doubleWorldHeight; y <= doubleWorldHeight; y += cellSize) {
+            renderer.line(-doubleWorldWidth, y, doubleWorldWidth, y);
         }
 
         // draw x/y axis lines
@@ -65,9 +65,9 @@ public class ViewportUtils {
         renderer.end();
     }
 
-    public static void debugPixelPerUnit(Viewport viewport){
+    public static void debugPixelPerUnit(Viewport viewport) {
         // validate parameters/arguments
-        if(viewport == null){
+        if (viewport == null) {
             throw new IllegalArgumentException("viewport parameter is required.");
         }
 

@@ -2,25 +2,24 @@ package util.debug;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Logger;
 
 public class DebugCameraController {
-
-    // constants
-    private static final int DEFAULT_LEFT_KEY = Input.Keys.A;
-    private static final int DEFAULT_RIGHT_KEY = Input.Keys.D;
-    private static final int DEFAULT_UP_KEY = Input.Keys.W;
-    private static final int DEFAULT_DOWN_KEY = Input.Keys.S;
-
-    private static final float DEFAULT_MOVE_SPEED = 20.0f;
+    private static final Logger LOGGER = new Logger(DebugCameraController.class.getName(), Logger.DEBUG);
 
     // attributes
     private Vector2 position = new Vector2();
     private Vector2 startPosition = new Vector2();
+    private float zoom = 1.0f;
+
+    private DebugCameraConfig cameraConfig;
 
     public DebugCameraController() {
+        cameraConfig = new DebugCameraConfig();
+        LOGGER.info("cameraConfig: " + cameraConfig.toString());
     }
 
     public void setStartPosition(float x, float y) {
@@ -30,6 +29,7 @@ public class DebugCameraController {
 
     public void applyTo(OrthographicCamera camera) {
         camera.position.set(position, 0);
+        camera.zoom = zoom;
         camera.update();
     }
 
@@ -39,20 +39,36 @@ public class DebugCameraController {
             return;
         }
 
-        float moveSpeed = DEFAULT_MOVE_SPEED * delta;
+        float moveSpeed = cameraConfig.getMoveSpeed() * delta;
+        float zoomSpeed = cameraConfig.getZoomSpeed() * delta;
+
 
         // move controls
-        if (Gdx.input.isKeyPressed(DEFAULT_LEFT_KEY)) {
+        if (cameraConfig.isLeftPressed()) {
             moveLeft(moveSpeed);
-        }
-        if (Gdx.input.isKeyPressed(DEFAULT_RIGHT_KEY)) {
+        } else if (cameraConfig.isRightPressed()) {
             moveRight(moveSpeed);
-        }
-        if (Gdx.input.isKeyPressed(DEFAULT_UP_KEY)) {
+        } else if (cameraConfig.isUpPressed()) {
             moveUp(moveSpeed);
-        }
-        if (Gdx.input.isKeyPressed(DEFAULT_DOWN_KEY)) {
+        } else if (cameraConfig.isDownPressed()) {
             moveDown(moveSpeed);
+        }
+
+        // zoom controls
+        if (cameraConfig.isZoomInPressed()) {
+            zoomIn(zoomSpeed);
+        } else if (cameraConfig.isZoomOutPressed()) {
+            zoomOut(zoomSpeed);
+        }
+
+        // reset controls
+        if (cameraConfig.isResetPressed()) {
+            reset();
+        }
+
+        // log controls
+        if (cameraConfig.isLogPressed()) {
+            logDebug();
         }
     }
 
@@ -79,5 +95,27 @@ public class DebugCameraController {
 
     private void moveDown(float speed) {
         moveCamera(0, -speed);
+    }
+
+    private void zoomIn(float zoomSpeed) {
+        setZoom(zoom + zoomSpeed);
+    }
+
+    private void zoomOut(float zoomSpeed) {
+        setZoom(zoom - zoomSpeed);
+    }
+
+    private void setZoom(float value) {
+        // this code will keep the zoom value between the MIN/MAX values
+        zoom = MathUtils.clamp(value, cameraConfig.getMaxZoomIn(), cameraConfig.getMaxZoomOut());
+    }
+
+    private void reset() {
+        position.set(startPosition);
+        setZoom(1.0f);
+    }
+
+    private void logDebug() {
+        LOGGER.debug("Position: " + position + " zoom: " + zoom);
     }
 }

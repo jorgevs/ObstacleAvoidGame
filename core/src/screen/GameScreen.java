@@ -3,10 +3,13 @@ package screen;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import config.GameConfig;
+import entity.Obstacle;
 import entity.Player;
 import util.GdxUtils;
 import util.ViewportUtils;
@@ -20,6 +23,9 @@ public class GameScreen implements Screen {
     private ShapeRenderer renderer;
 
     private Player player;
+    private Array<Obstacle> obstacles = new Array<Obstacle>();
+    private float obstacleTimer;
+
     private DebugCameraController debugCameraController;
 
     @Override
@@ -64,13 +70,63 @@ public class GameScreen implements Screen {
     }
 
     private void update(float deltaTime) {
-        updatePLayer();
+        updatePlayer();
+        updateObstacles(deltaTime);
     }
 
 
-    private void updatePLayer() {
+    private void updatePlayer() {
         //LOGGER.debug("playerX: " + player.getX() + " playerY: " + player.getY());
         player.update();
+
+        blockPlayerFromLeavingTheWorld();
+    }
+
+    private void blockPlayerFromLeavingTheWorld() {
+        float playerX = MathUtils.clamp(player.getX(), (player.getWidth() / 2), (GameConfig.WORLD_WIDTH - player.getWidth() / 2));
+        float playerY = MathUtils.clamp(player.getY(), (player.getHeight() / 2), (GameConfig.WORLD_HEIGHT - player.getHeight() / 2));
+
+        /*float playerX = player.getX();
+        float playerY = player.getY();
+
+        if (playerX < player.getWidth() / 2) {
+            playerX = player.getWidth() / 2;
+        } else if (playerX > (GameConfig.WORLD_WIDTH - player.getWidth() / 2)) {
+            playerX = (GameConfig.WORLD_WIDTH - player.getWidth() / 2);
+        }
+
+        if (playerY < player.getHeight() / 2) {
+            playerY = player.getHeight() / 2;
+        } else if (playerY > (GameConfig.WORLD_HEIGHT - player.getHeight() / 2)) {
+            playerY = (GameConfig.WORLD_HEIGHT - player.getHeight() / 2);
+        }*/
+
+        player.setPosition(playerX, playerY);
+    }
+
+    private void updateObstacles(float delta){
+        for (Obstacle obstacle : obstacles){
+            obstacle.update();
+        }
+
+        createNewObstacle(delta);
+    }
+
+    private void createNewObstacle(float delta){
+        obstacleTimer += delta;
+
+        if(obstacleTimer >= GameConfig.OBSTACLE_SPAWN_TIME){
+            float min = 0.0f;
+            float max = GameConfig.WORLD_WIDTH;
+            float obstacleX = MathUtils.random(min, max);
+            float obstacleY = GameConfig.WORLD_HEIGHT;
+
+            Obstacle obstacle = new Obstacle();
+            obstacle.setPosition(obstacleX, obstacleY);
+
+            obstacles.add(obstacle);
+            obstacleTimer = 0.0f;
+        }
     }
 
     @Override
@@ -94,6 +150,10 @@ public class GameScreen implements Screen {
 
     private void drawDebug() {
         player.drawDebug(renderer);
+
+        for (Obstacle obstacle : obstacles){
+            obstacle.drawDebug(renderer);
+        }
     }
 
     @Override

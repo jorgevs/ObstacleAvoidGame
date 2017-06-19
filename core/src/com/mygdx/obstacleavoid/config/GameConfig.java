@@ -17,13 +17,14 @@ public class GameConfig {
     public static final float MAX_PLAYER_X_SPEED = 0.25f; // unit worlds
     public static final float MAX_PLAYER_Y_SPEED = 0.25f; // unit worlds
 
-    public static final float MAX_OBSTACLE_X_SPEED = 0.15f; // unit worlds
-    public static final float MAX_OBSTACLE_Y_SPEED = 0.15f; // unit worlds
-
     public static final float OBSTACLE_SPAWN_TIME = 0.25f; // secs - spawn obstacle every interval
     public static final float SCORE_MAX_TIME = 1.25f; // secs - add score every interval
 
     public static final int LIVES_START = 3;
+
+    public static final float EASY_OBSTABLE_SPEED = 0.1f;
+    public static final float MEDIUM_OBSTABLE_SPEED = 0.20f;
+    public static final float HARD_OBSTABLE_SPEED = 0.30f;
 
     private GameConfig() {}
 }

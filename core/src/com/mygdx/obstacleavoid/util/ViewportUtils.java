@@ -1,4 +1,4 @@
-package util;
+package com.mygdx.obstacleavoid.util;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -10,6 +10,8 @@ public class ViewportUtils {
 
     private static final int DEFAULT_CELL_SIZE = 1;
 
+    private ViewportUtils() {
+    }
 
     public static void drawGrid(Viewport viewport, ShapeRenderer renderer) {
         drawGrid(viewport, renderer, DEFAULT_CELL_SIZE);
@@ -74,7 +76,6 @@ public class ViewportUtils {
         float screenWidth = viewport.getScreenWidth();
         float screenHeight = viewport.getScreenHeight();
 
-
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
 
@@ -85,6 +86,4 @@ public class ViewportUtils {
         LOGGER.debug("xPPU: " + xPPU + " yPPU: " + yPPU);
     }
 
-    private ViewportUtils() {
-    }
 }

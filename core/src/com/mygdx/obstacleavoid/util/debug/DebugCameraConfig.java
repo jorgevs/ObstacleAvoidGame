@@ -1,4 +1,4 @@
-package util.debug;
+package com.mygdx.obstacleavoid.util.debug;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

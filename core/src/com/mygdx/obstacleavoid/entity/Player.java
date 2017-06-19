@@ -1,8 +1,8 @@
-package entity;
+package com.mygdx.obstacleavoid.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import config.GameConfig;
+import com.mygdx.obstacleavoid.config.GameConfig;
 
 public class Player extends GameObjectBase {
 

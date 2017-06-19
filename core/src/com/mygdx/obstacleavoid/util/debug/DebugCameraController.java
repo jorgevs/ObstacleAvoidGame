@@ -1,4 +1,4 @@
-package util.debug;
+package com.mygdx.obstacleavoid.util.debug;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -82,11 +82,11 @@ public class DebugCameraController {
 
 
     private void moveLeft(float speed) {
-        moveCamera(-speed, 0);
+        moveCamera(speed, 0);
     }
 
     private void moveRight(float speed) {
-        moveCamera(speed, 0);
+        moveCamera(-speed, 0);
     }
 
     private void moveUp(float speed) {
@@ -96,6 +96,7 @@ public class DebugCameraController {
     private void moveDown(float speed) {
         moveCamera(0, -speed);
     }
+
 
     private void zoomIn(float zoomSpeed) {
         setZoom(zoom + zoomSpeed);

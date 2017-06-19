@@ -1,4 +1,4 @@
-package entity;
+package com.mygdx.obstacleavoid.entity;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
@@ -14,6 +14,18 @@ public abstract class GameObjectBase {
         bounds = new Circle(x, y, boundsRadius);
     }
 
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public Circle getBounds() {
+        return bounds;
+    }
+
     public void drawDebug(ShapeRenderer renderer) {
         renderer.circle(bounds.x, bounds.y, bounds.radius, 30);
     }
@@ -27,14 +39,6 @@ public abstract class GameObjectBase {
 
     private void updateBounds() {
         bounds.setPosition(x, y);
-    }
-
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
     }
 
 }

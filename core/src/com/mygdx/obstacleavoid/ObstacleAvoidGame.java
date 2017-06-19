@@ -4,7 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Logger;
-import screen.GameScreen;
+import com.mygdx.obstacleavoid.screen.GameScreen;
 
 public class ObstacleAvoidGame extends Game {
     private static final Logger LOGGER = new Logger(ObstacleAvoidGame.class.getName(), Logger.DEBUG);
@@ -17,7 +17,7 @@ public class ObstacleAvoidGame extends Game {
 
     @Override
     public void dispose() {
-        // dispose the actual screen object
+        // dispose the actual com.mygdx.obstacleavoid.screen object
         getScreen().dispose();
     }
 }

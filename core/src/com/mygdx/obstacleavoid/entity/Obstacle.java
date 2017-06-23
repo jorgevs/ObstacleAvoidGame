@@ -1,11 +1,12 @@
 package com.mygdx.obstacleavoid.entity;
 
+import com.badlogic.gdx.utils.Pool;
 import com.mygdx.obstacleavoid.config.GameConfig;
 
-public class Obstacle extends GameObjectBase {
+public class Obstacle extends GameObjectBase implements Pool.Poolable {
 
     private static final float BOUNDS_RADIUS = 0.15f; // world units
-    private static final float SIZE = BOUNDS_RADIUS * 2; // world units
+    public static final float SIZE = BOUNDS_RADIUS * 2; // world units
 
     private float speedY = GameConfig.MEDIUM_OBSTABLE_SPEED;
 
@@ -48,5 +49,11 @@ public class Obstacle extends GameObjectBase {
 
     public boolean isHit() {
         return hit;
+    }
+
+    @Override
+    public void reset() {
+        // Reset the Obstacle object, once it has been free in the pool
+        hit = false;
     }
 }

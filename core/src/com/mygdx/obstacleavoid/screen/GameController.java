@@ -3,10 +3,14 @@ package com.mygdx.obstacleavoid.screen;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import com.mygdx.obstacleavoid.config.DifficultyLevel;
 import com.mygdx.obstacleavoid.config.GameConfig;
 import com.mygdx.obstacleavoid.entity.Obstacle;
 import com.mygdx.obstacleavoid.entity.Player;
+
+import java.util.Iterator;
 
 public class GameController {
     private static final Logger LOGGER = new Logger(GameController.class.getName(), Logger.DEBUG);
@@ -14,6 +18,7 @@ public class GameController {
     // == attributes ==
     private Player player;
     private Array<Obstacle> obstacles;
+    private Pool<Obstacle> obstaclePool;
 
     private float obstacleTimer;
     private float scoreTimer;
@@ -35,6 +40,7 @@ public class GameController {
 
         // obstacles
         obstacles = new Array<Obstacle>();
+        obstaclePool = Pools.get(Obstacle.class, 20);
     }
 
     // == public methods ==
@@ -102,24 +108,44 @@ public class GameController {
         }
 
         createNewObstacle(delta);
+        removePassedObstacles();
     }
 
     private void createNewObstacle(float delta){
         obstacleTimer += delta;
 
         if(obstacleTimer >= GameConfig.OBSTACLE_SPAWN_TIME){
-            float min = 0.0f;
-            float max = GameConfig.WORLD_WIDTH;
+            float min = 0.0f + (Obstacle.SIZE / 2f);
+            float max = GameConfig.WORLD_WIDTH - (Obstacle.SIZE / 2f);
             float obstacleX = MathUtils.random(min, max);
             float obstacleY = GameConfig.WORLD_HEIGHT;
 
-            Obstacle obstacle = new Obstacle();
+            //Obstacle obstacle = new Obstacle();
+            Obstacle obstacle = obstaclePool.obtain();
             obstacle.setSpeedY(difficultyLevel.getObstacleSpeed());
             obstacle.setPosition(obstacleX, obstacleY);
 
             obstacles.add(obstacle);
             // reset the obstacle timer
             obstacleTimer = 0.0f;
+        }
+    }
+
+    private void removePassedObstacles() {
+        if(obstacles.size > 0) {
+            /*Iterator iterator = obstacles.iterator();
+            while (iterator.hasNext()) {
+                Obstacle obstacle = (Obstacle) iterator.next();
+                if (obstacle.getY() < 0) {
+                    iterator.remove();
+                }
+            }*/
+            float minObstacleY = (0 - Obstacle.SIZE);
+            Obstacle obstacle = obstacles.first();
+            if (obstacle.getY() < minObstacleY) {
+                obstacles.removeValue(obstacle, true);
+                obstaclePool.free(obstacle);
+            }
         }
     }
 

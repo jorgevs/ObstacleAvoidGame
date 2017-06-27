@@ -2,18 +2,20 @@ package com.mygdx.obstacleavoid.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.obstacleavoid.assets.AssetPaths;
 import com.mygdx.obstacleavoid.config.GameConfig;
+import com.mygdx.obstacleavoid.entity.Background;
 import com.mygdx.obstacleavoid.entity.Obstacle;
+import com.mygdx.obstacleavoid.entity.Player;
 import com.mygdx.obstacleavoid.util.GdxUtils;
 import com.mygdx.obstacleavoid.util.ViewportUtils;
 import com.mygdx.obstacleavoid.util.debug.DebugCameraController;
@@ -33,6 +35,10 @@ public class GameRenderer implements Disposable {
     private BitmapFont font;
     private final GlyphLayout glyphLayout = new GlyphLayout();
 
+    private Texture playerTexture;
+    private Texture obstacleTexture;
+    private Texture backgroundTexture;
+
     private DebugCameraController debugCameraController;
 
     private final GameController gameController;
@@ -44,7 +50,7 @@ public class GameRenderer implements Disposable {
     }
 
     //== init ==
-    private void init(){
+    private void init() {
         camera = new OrthographicCamera();
         viewport = new FitViewport(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT, camera);
         renderer = new ShapeRenderer();
@@ -54,12 +60,17 @@ public class GameRenderer implements Disposable {
         batch = new SpriteBatch();
         font = new BitmapFont(Gdx.files.internal(AssetPaths.UI_FONT));
 
+        playerTexture = new Texture(Gdx.files.internal("gameplay/player.png"));
+        obstacleTexture = new Texture(Gdx.files.internal("gameplay/obstacle.png"));
+        backgroundTexture = new Texture(Gdx.files.internal("gameplay/background.png"));
+
+
         debugCameraController = new DebugCameraController();
         debugCameraController.setStartPosition(GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y);
     }
 
     //== public methods ==
-    public void render(float deltaTime){
+    public void render(float deltaTime) {
         // update camera (is not wrapped inside the alive conditions, because we
         // want to be able to control the camera even when the game is over)
         debugCameraController.handleDebugInput(deltaTime);
@@ -67,6 +78,9 @@ public class GameRenderer implements Disposable {
 
         // clear screen
         GdxUtils.clearScreen();
+
+        // render game characters
+        renderGamePlay();
 
         // render ui/hud
         renderUi();
@@ -84,13 +98,40 @@ public class GameRenderer implements Disposable {
 
     public void dispose() {
         renderer.dispose();
-
         batch.dispose();
         font.dispose();
+        playerTexture.dispose();
+        obstacleTexture.dispose();
+        backgroundTexture.dispose();
     }
 
     //== private methods ==
-    private void renderUi(){
+    private void renderGamePlay() {
+        viewport.apply(); // important! Apply the viewport before rendering
+        batch.setProjectionMatrix(camera.combined);
+
+        batch.begin();
+        drawCharacters();
+        batch.end();
+    }
+
+    private void drawCharacters() {
+        // draw background
+        Background background = gameController.getBackground();
+        batch.draw(backgroundTexture, background.getX(), background.getY(), background.getWidth(), background.getHeight());
+
+        // draw player
+        Player player = gameController.getPlayer();
+        batch.draw(playerTexture, player.getX(), player.getY(), player.getWidth(), player.getHeight());
+
+        // draw obstacles
+        for (Obstacle obstacle : gameController.getObstacles()) {
+            batch.draw(obstacleTexture, obstacle.getX(), obstacle.getY(), obstacle.getWidth(), obstacle.getHeight());
+        }
+
+    }
+
+    private void renderUi() {
         hudViewport.apply(); // important! Apply the viewport before rendering
         batch.setProjectionMatrix(hudCamera.combined);
 
@@ -99,7 +140,7 @@ public class GameRenderer implements Disposable {
         batch.end();
     }
 
-    private void drawUi(){
+    private void drawUi() {
         String livesText = "LIVES: " + gameController.getLives();
         glyphLayout.setText(font, livesText);
         font.draw(batch, livesText, 20, GameConfig.HUD_HEIGHT - glyphLayout.height);
@@ -107,16 +148,6 @@ public class GameRenderer implements Disposable {
         String scoreText = "SCORE: " + gameController.getDisplayScore();
         glyphLayout.setText(font, scoreText);
         font.draw(batch, scoreText, GameConfig.HUD_WIDTH - glyphLayout.width - 20, GameConfig.HUD_HEIGHT - glyphLayout.height);
-    }
-
-    private boolean isPlayerCollidingWithObstacle(){
-        for(Obstacle obstacle : gameController.getObstacles()){
-            if(!obstacle.isHit() && obstacle.isPlayerColliding(gameController.getPlayer())){
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void renderDebug() {
@@ -133,10 +164,18 @@ public class GameRenderer implements Disposable {
     private void drawDebug() {
         gameController.getPlayer().drawDebug(renderer);
 
-        Array<Obstacle> obstacles = gameController.getObstacles();
-        for (Obstacle obstacle : obstacles){
+        for (Obstacle obstacle : gameController.getObstacles()) {
             obstacle.drawDebug(renderer);
         }
     }
 
+    private boolean isPlayerCollidingWithObstacle() {
+        for (Obstacle obstacle : gameController.getObstacles()) {
+            if (!obstacle.isHit() && obstacle.isPlayerColliding(gameController.getPlayer())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

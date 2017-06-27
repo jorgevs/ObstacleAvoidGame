@@ -1,27 +1,18 @@
 package com.mygdx.obstacleavoid.entity;
 
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.Pool;
 import com.mygdx.obstacleavoid.config.GameConfig;
 
 public class Obstacle extends GameObjectBase implements Pool.Poolable {
-
-    private static final float BOUNDS_RADIUS = 0.15f; // world units
-    public static final float SIZE = BOUNDS_RADIUS * 2; // world units
 
     private float speedY = GameConfig.MEDIUM_OBSTABLE_SPEED;
 
     private boolean hit = false;
 
     public Obstacle() {
-        super(BOUNDS_RADIUS);
-    }
-
-    public float getWidth() {
-        return SIZE;
-    }
-
-    public float getHeight() {
-        return SIZE;
+        super(GameConfig.OBSTACLE_BOUNDS_RADIUS);
+        setSize(GameConfig.OBSTACLE_SIZE, GameConfig.OBSTACLE_SIZE);
     }
 
     public void setSpeedY(float speedY) {

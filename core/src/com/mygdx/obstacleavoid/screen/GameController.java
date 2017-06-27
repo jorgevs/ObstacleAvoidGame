@@ -7,10 +7,9 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import com.mygdx.obstacleavoid.config.DifficultyLevel;
 import com.mygdx.obstacleavoid.config.GameConfig;
+import com.mygdx.obstacleavoid.entity.Background;
 import com.mygdx.obstacleavoid.entity.Obstacle;
 import com.mygdx.obstacleavoid.entity.Player;
-
-import java.util.Iterator;
 
 public class GameController {
     private static final Logger LOGGER = new Logger(GameController.class.getName(), Logger.DEBUG);
@@ -19,6 +18,7 @@ public class GameController {
     private Player player;
     private Array<Obstacle> obstacles;
     private Pool<Obstacle> obstaclePool;
+    private Background background;
 
     private float obstacleTimer;
     private float scoreTimer;
@@ -27,26 +27,34 @@ public class GameController {
     private int displayScore;
     private DifficultyLevel difficultyLevel = DifficultyLevel.HARD;
 
+    // player's initial position
+    private final float startPlayerX = (GameConfig.WORLD_WIDTH - GameConfig.PLAYER_SIZE) / 2;
+    private final float startPlayerY = 1 - (GameConfig.PLAYER_SIZE / 2);
+
+
     // == constructors ==
     public GameController() {
         init();
     }
 
     // == init ==
-    private void init(){
+    private void init() {
         player = new Player();
-        // player's initial position
-        player.setPosition(GameConfig.WORLD_WIDTH / 2, 1);
+        player.setPosition(startPlayerX, startPlayerY);
 
         // obstacles
         obstacles = new Array<Obstacle>();
         obstaclePool = Pools.get(Obstacle.class, 20);
+
+        // background
+        background = new Background();
+        background.setPosition(0, 0);
+        background.setSize(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT);
     }
 
     // == public methods ==
     public void update(float deltaTime) {
-        if(isGameOver()){
-            LOGGER.debug("Game Over!!!");
+        if (isGameOver()) {
             return;
         }
 
@@ -55,9 +63,15 @@ public class GameController {
         updateScore(deltaTime);
         updateDisplayScore(deltaTime);
 
-        if(isPlayerCollidingWithObstacle()){
+        if (isPlayerCollidingWithObstacle()) {
             LOGGER.debug("Collision detected.");
             lives--;
+
+            if (isGameOver()) {
+                LOGGER.debug("Game Over!!!");
+            } else {
+                restart();
+            }
         }
     }
 
@@ -69,6 +83,10 @@ public class GameController {
         return obstacles;
     }
 
+    public Background getBackground() {
+        return background;
+    }
+
     public int getLives() {
         return lives;
     }
@@ -78,9 +96,15 @@ public class GameController {
     }
 
     // == private methods ==
-    private boolean isPlayerCollidingWithObstacle(){
-        for(Obstacle obstacle : obstacles){
-            if(!obstacle.isHit() && obstacle.isPlayerColliding(player)){
+    private void restart() {
+        obstaclePool.freeAll(obstacles);
+        obstacles.clear();
+        player.setPosition(startPlayerX, startPlayerY);
+    }
+
+    private boolean isPlayerCollidingWithObstacle() {
+        for (Obstacle obstacle : obstacles) {
+            if (!obstacle.isHit() && obstacle.isPlayerColliding(player)) {
                 return true;
             }
         }
@@ -96,14 +120,14 @@ public class GameController {
     }
 
     private void blockPlayerFromLeavingTheWorld() {
-        float playerX = MathUtils.clamp(player.getX(), (player.getWidth() / 2), (GameConfig.WORLD_WIDTH - player.getWidth() / 2));
-        float playerY = MathUtils.clamp(player.getY(), (player.getHeight() / 2), (GameConfig.WORLD_HEIGHT - player.getHeight() / 2));
+        float playerX = MathUtils.clamp(player.getX(), 0, GameConfig.WORLD_WIDTH - player.getWidth());
+        float playerY = MathUtils.clamp(player.getY(), 0, GameConfig.WORLD_HEIGHT - player.getHeight());
 
         player.setPosition(playerX, playerY);
     }
 
-    private void updateObstacles(float delta){
-        for (Obstacle obstacle : obstacles){
+    private void updateObstacles(float delta) {
+        for (Obstacle obstacle : obstacles) {
             obstacle.update();
         }
 
@@ -111,12 +135,12 @@ public class GameController {
         removePassedObstacles();
     }
 
-    private void createNewObstacle(float delta){
+    private void createNewObstacle(float delta) {
         obstacleTimer += delta;
 
-        if(obstacleTimer >= GameConfig.OBSTACLE_SPAWN_TIME){
-            float min = 0.0f + (Obstacle.SIZE / 2f);
-            float max = GameConfig.WORLD_WIDTH - (Obstacle.SIZE / 2f);
+        if (obstacleTimer >= GameConfig.OBSTACLE_SPAWN_TIME) {
+            float min = 0f;
+            float max = GameConfig.WORLD_WIDTH - GameConfig.OBSTACLE_SIZE;
             float obstacleX = MathUtils.random(min, max);
             float obstacleY = GameConfig.WORLD_HEIGHT;
 
@@ -132,7 +156,7 @@ public class GameController {
     }
 
     private void removePassedObstacles() {
-        if(obstacles.size > 0) {
+        if (obstacles.size > 0) {
             /*Iterator iterator = obstacles.iterator();
             while (iterator.hasNext()) {
                 Obstacle obstacle = (Obstacle) iterator.next();
@@ -140,7 +164,7 @@ public class GameController {
                     iterator.remove();
                 }
             }*/
-            float minObstacleY = (0 - Obstacle.SIZE);
+            float minObstacleY = (0 - GameConfig.OBSTACLE_SIZE);
             Obstacle obstacle = obstacles.first();
             if (obstacle.getY() < minObstacleY) {
                 obstacles.removeValue(obstacle, true);
@@ -149,23 +173,23 @@ public class GameController {
         }
     }
 
-    private void updateScore(float deltaTime){
+    private void updateScore(float deltaTime) {
         scoreTimer += deltaTime;
 
-        if(scoreTimer >= GameConfig.SCORE_MAX_TIME){
-            score += MathUtils.random(0,5);
+        if (scoreTimer >= GameConfig.SCORE_MAX_TIME) {
+            score += MathUtils.random(0, 5);
             scoreTimer = 0.0f;
         }
     }
 
     private void updateDisplayScore(float deltaTime) {
-        if(displayScore < score){
-            displayScore = Math.min(score, displayScore + (int)(60 * deltaTime));   // 60 frames per second
+        if (displayScore < score) {
+            displayScore = Math.min(score, displayScore + (int) (60 * deltaTime));   // 60 frames per second
 
         }
     }
 
-    private boolean isGameOver(){
+    private boolean isGameOver() {
         return lives <= 0;
     }
 

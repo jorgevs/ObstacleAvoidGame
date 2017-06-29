@@ -5,7 +5,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Logger;
 import com.mygdx.obstacleavoid.screen.GameScreen;
-import com.mygdx.obstacleavoid.screen.GameScreenOld;
 
 public class ObstacleAvoidGame extends Game {
     private static final Logger LOGGER = new Logger(ObstacleAvoidGame.class.getName(), Logger.DEBUG);

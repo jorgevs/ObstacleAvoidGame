@@ -1,5 +1,7 @@
 package com.mygdx.obstacleavoid.screen;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
@@ -95,6 +97,10 @@ public class GameController {
         return displayScore;
     }
 
+    public boolean isGameOver() {
+        return lives <= 0;
+    }
+
     // == private methods ==
     private void restart() {
         obstaclePool.freeAll(obstacles);
@@ -113,9 +119,27 @@ public class GameController {
     }
 
     private void updatePlayer() {
-        //LOGGER.debug("playerX: " + player.getX() + " playerY: " + player.getY());
-        player.update();
+        float xSpeed = 0;
+        float ySpeed = 0;
 
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            xSpeed = GameConfig.MAX_PLAYER_X_SPEED;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            xSpeed = -GameConfig.MAX_PLAYER_X_SPEED;
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            ySpeed = GameConfig.MAX_PLAYER_Y_SPEED;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            ySpeed = -GameConfig.MAX_PLAYER_Y_SPEED;
+        }
+
+        player.setPosition(player.getX() + xSpeed, player.getY() + ySpeed);
+        //LOGGER.debug("playerX: " + player.getX() + " playerY: " + player.getY());
+
+        // keeps the player inside the world's borders
         blockPlayerFromLeavingTheWorld();
     }
 
@@ -187,10 +211,6 @@ public class GameController {
             displayScore = Math.min(score, displayScore + (int) (60 * deltaTime));   // 60 frames per second
 
         }
-    }
-
-    private boolean isGameOver() {
-        return lives <= 0;
     }
 
 }

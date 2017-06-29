@@ -21,8 +21,18 @@ public abstract class GameObjectBase {
         return x;
     }
 
+    public void setX(float x) {
+        this.x = x;
+        updateBounds();
+    }
+
     public float getY() {
         return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+        updateBounds();
     }
 
     public float getWidth() {

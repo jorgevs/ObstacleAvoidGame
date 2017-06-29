@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -75,6 +77,19 @@ public class GameRenderer implements Disposable {
         // want to be able to control the camera even when the game is over)
         debugCameraController.handleDebugInput(deltaTime);
         debugCameraController.applyTo(camera);
+
+        // adding screen touch controls
+        if(Gdx.input.isTouched() && !gameController.isGameOver()){
+            Vector2 screenTouch = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+            Vector2 worldTouch = viewport.unproject(new Vector2(screenTouch));
+
+            LOGGER.debug("screenTouch: " + screenTouch);
+            LOGGER.debug("worldTouch: " + worldTouch);
+
+            Player player = gameController.getPlayer();
+            worldTouch.x = MathUtils.clamp(worldTouch.x, 0, GameConfig.WORLD_WIDTH - player.getWidth());
+            player.setX(worldTouch.x);
+        }
 
         // clear screen
         GdxUtils.clearScreen();

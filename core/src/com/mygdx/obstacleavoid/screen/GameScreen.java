@@ -1,18 +1,38 @@
 package com.mygdx.obstacleavoid.screen;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Logger;
+import com.mygdx.obstacleavoid.ObstacleAvoidGame;
+import com.mygdx.obstacleavoid.assets.AssetDescriptors;
 
 public class GameScreen implements Screen {
     private static final Logger LOGGER = new Logger(GameScreen.class.getName(), Logger.DEBUG);
 
+    private final ObstacleAvoidGame game;
+    private final AssetManager assetManager;
+
     private GameController controller;
     private GameRenderer renderer;
 
+    public GameScreen(ObstacleAvoidGame game){
+        this.game = game;
+        this.assetManager = game.getAssetManager();
+    }
+
     @Override
     public void show() {
+        assetManager.load(AssetDescriptors.FONT);
+        assetManager.load(AssetDescriptors.BACKGROUND);
+        assetManager.load(AssetDescriptors.OBSTACLE);
+        assetManager.load(AssetDescriptors.PLAYER);
+
+        assetManager.finishLoading();
+
         controller = new GameController();
-        renderer = new GameRenderer(controller);
+        renderer = new GameRenderer(assetManager, controller);
     }
 
     @Override

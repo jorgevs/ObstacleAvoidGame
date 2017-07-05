@@ -5,7 +5,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Logger;
-import com.mygdx.obstacleavoid.screen.GameScreen;
+import com.mygdx.obstacleavoid.screen.game.GameScreen;
+import com.mygdx.obstacleavoid.screen.loading.LoadingScreen;
 
 public class ObstacleAvoidGame extends Game {
     private static final Logger LOGGER = new Logger(ObstacleAvoidGame.class.getName(), Logger.DEBUG);
@@ -19,7 +20,7 @@ public class ObstacleAvoidGame extends Game {
         assetManager = new AssetManager();
         assetManager.getLogger().setLevel(Logger.DEBUG);
 
-        setScreen(new GameScreen(this));
+        setScreen(new LoadingScreen(this));
     }
 
     @Override

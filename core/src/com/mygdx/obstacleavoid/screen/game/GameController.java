@@ -1,4 +1,4 @@
-package com.mygdx.obstacleavoid.screen;
+package com.mygdx.obstacleavoid.screen.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

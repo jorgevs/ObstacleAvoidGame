@@ -4,6 +4,8 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Logger;
 import com.mygdx.obstacleavoid.screen.game.GameScreen;
 import com.mygdx.obstacleavoid.screen.loading.LoadingScreen;
@@ -12,6 +14,7 @@ public class ObstacleAvoidGame extends Game {
     private static final Logger LOGGER = new Logger(ObstacleAvoidGame.class.getName(), Logger.DEBUG);
 
     private AssetManager assetManager;
+    private SpriteBatch spriteBatch;
 
     @Override
     public void create() {
@@ -19,6 +22,8 @@ public class ObstacleAvoidGame extends Game {
 
         assetManager = new AssetManager();
         assetManager.getLogger().setLevel(Logger.DEBUG);
+
+        spriteBatch = new SpriteBatch();
 
         setScreen(new LoadingScreen(this));
     }
@@ -28,9 +33,14 @@ public class ObstacleAvoidGame extends Game {
         // dispose the actual com.mygdx.obstacleavoid.screen object
         getScreen().dispose();
         assetManager.dispose();
+        spriteBatch.dispose();
     }
 
     public AssetManager getAssetManager() {
         return assetManager;
+    }
+
+    public SpriteBatch getSpriteBatch(){
+        return spriteBatch;
     }
 }

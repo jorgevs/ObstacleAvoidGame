@@ -21,6 +21,8 @@ import com.mygdx.obstacleavoid.util.GdxUtils;
 import com.mygdx.obstacleavoid.util.ViewportUtils;
 import com.mygdx.obstacleavoid.util.debug.DebugCameraController;
 
+import javax.swing.*;
+
 public class GameRenderer implements Disposable {
     private static final Logger LOGGER = new Logger(GameRenderer.class.getName(), Logger.DEBUG);
 
@@ -32,11 +34,11 @@ public class GameRenderer implements Disposable {
     private OrthographicCamera hudCamera;
     private Viewport hudViewport;
 
-    private SpriteBatch batch;
     private BitmapFont font;
     private final GlyphLayout glyphLayout = new GlyphLayout();
 
     private final AssetManager assetManager;
+    private final SpriteBatch spriteBatch;
 
     private TextureRegion playerRegion;
     private TextureRegion obstacleRegion;
@@ -47,7 +49,8 @@ public class GameRenderer implements Disposable {
     private final GameController gameController;
 
     //== constructors ==
-    public GameRenderer(AssetManager assetManager, GameController gameController) {
+    public GameRenderer(SpriteBatch spriteBatch, AssetManager assetManager, GameController gameController) {
+        this.spriteBatch = spriteBatch;
         this.assetManager = assetManager;
         this.gameController = gameController;
         init();
@@ -61,7 +64,6 @@ public class GameRenderer implements Disposable {
 
         hudCamera = new OrthographicCamera();
         hudViewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT, hudCamera);
-        batch = new SpriteBatch();
         font = assetManager.get(AssetDescriptors.FONT);
 
         TextureAtlas gamePlayAtlas = assetManager.get(AssetDescriptors.GAME_PLAY);
@@ -121,56 +123,51 @@ public class GameRenderer implements Disposable {
 
     public void dispose() {
         renderer.dispose();
-        batch.dispose();
-//        font.dispose();
-//        playerTexture.dispose();
-//        obstacleTexture.dispose();
-//        backgroundTexture.dispose();
     }
 
     //== private methods ==
     private void renderGamePlay() {
         viewport.apply(); // important! Apply the viewport before rendering
-        batch.setProjectionMatrix(camera.combined);
+        spriteBatch.setProjectionMatrix(camera.combined);
 
-        batch.begin();
+        spriteBatch.begin();
         drawCharacters();
-        batch.end();
+        spriteBatch.end();
     }
 
     private void drawCharacters() {
         // draw background
         Background background = gameController.getBackground();
-        batch.draw(backgroundRegion, background.getX(), background.getY(), background.getWidth(), background.getHeight());
+        spriteBatch.draw(backgroundRegion, background.getX(), background.getY(), background.getWidth(), background.getHeight());
 
         // draw player
         Player player = gameController.getPlayer();
-        batch.draw(playerRegion, player.getX(), player.getY(), player.getWidth(), player.getHeight());
+        spriteBatch.draw(playerRegion, player.getX(), player.getY(), player.getWidth(), player.getHeight());
 
         // draw obstacles
         for (Obstacle obstacle : gameController.getObstacles()) {
-            batch.draw(obstacleRegion, obstacle.getX(), obstacle.getY(), obstacle.getWidth(), obstacle.getHeight());
+            spriteBatch.draw(obstacleRegion, obstacle.getX(), obstacle.getY(), obstacle.getWidth(), obstacle.getHeight());
         }
 
     }
 
     private void renderUi() {
         hudViewport.apply(); // important! Apply the viewport before rendering
-        batch.setProjectionMatrix(hudCamera.combined);
+        spriteBatch.setProjectionMatrix(hudCamera.combined);
 
-        batch.begin();
+        spriteBatch.begin();
         drawUi();
-        batch.end();
+        spriteBatch.end();
     }
 
     private void drawUi() {
         String livesText = "LIVES: " + gameController.getLives();
         glyphLayout.setText(font, livesText);
-        font.draw(batch, livesText, 20, GameConfig.HUD_HEIGHT - glyphLayout.height);
+        font.draw(spriteBatch, livesText, 20, GameConfig.HUD_HEIGHT - glyphLayout.height);
 
         String scoreText = "SCORE: " + gameController.getDisplayScore();
         glyphLayout.setText(font, scoreText);
-        font.draw(batch, scoreText, GameConfig.HUD_WIDTH - glyphLayout.width - 20, GameConfig.HUD_HEIGHT - glyphLayout.height);
+        font.draw(spriteBatch, scoreText, GameConfig.HUD_WIDTH - glyphLayout.width - 20, GameConfig.HUD_HEIGHT - glyphLayout.height);
     }
 
     private void renderDebug() {

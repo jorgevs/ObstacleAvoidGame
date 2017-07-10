@@ -23,7 +23,7 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         controller = new GameController();
-        renderer = new GameRenderer(assetManager, controller);
+        renderer = new GameRenderer(game.getSpriteBatch(), assetManager, controller);
     }
 
     @Override

@@ -1,12 +1,11 @@
 package com.mygdx.obstacleavoid.screen.game;
 
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Logger;
 import com.mygdx.obstacleavoid.ObstacleAvoidGame;
-import com.mygdx.obstacleavoid.assets.AssetDescriptors;
 
-public class GameScreen implements Screen {
+public class GameScreen extends ScreenAdapter {
     private static final Logger LOGGER = new Logger(GameScreen.class.getName(), Logger.DEBUG);
 
     private final ObstacleAvoidGame game;

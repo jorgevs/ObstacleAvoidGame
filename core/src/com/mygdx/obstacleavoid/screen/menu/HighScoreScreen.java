@@ -23,7 +23,6 @@ import com.mygdx.obstacleavoid.assets.AssetDescriptors;
 import com.mygdx.obstacleavoid.assets.RegionNames;
 import com.mygdx.obstacleavoid.config.GameConfig;
 import com.mygdx.obstacleavoid.util.GdxUtils;
-import javafx.scene.control.Tab;
 
 
 public class HighScoreScreen extends ScreenAdapter {

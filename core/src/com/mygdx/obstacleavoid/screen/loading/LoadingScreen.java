@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.obstacleavoid.ObstacleAvoidGame;
 import com.mygdx.obstacleavoid.assets.AssetDescriptors;
 import com.mygdx.obstacleavoid.config.GameConfig;
-import com.mygdx.obstacleavoid.screen.game.GameScreen;
 import com.mygdx.obstacleavoid.screen.menu.MenuScreen;
 import com.mygdx.obstacleavoid.util.GdxUtils;
 

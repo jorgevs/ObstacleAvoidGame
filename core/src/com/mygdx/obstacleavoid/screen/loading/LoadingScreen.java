@@ -39,11 +39,21 @@ public class LoadingScreen extends ScreenAdapter {
     // == public methods ==
 
     @Override
+    public void show() {
+        camera = new OrthographicCamera();
+        viewport = new FillViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT, camera);
+        shapeRenderer = new ShapeRenderer();
+
+        assetManager.load(AssetDescriptors.FONT);
+        assetManager.load(AssetDescriptors.GAME_PLAY);
+        assetManager.load(AssetDescriptors.UI);
+    }
+
+    @Override
     public void render(float delta) {
         update(delta);
 
         GdxUtils.clearScreen();
-        viewport.apply();
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -56,8 +66,6 @@ public class LoadingScreen extends ScreenAdapter {
     }
 
     private void update(float delta){
-        //waitMillis(400);
-
         // progress is between 0 and 1
         progress = assetManager.getProgress();
 
@@ -67,7 +75,6 @@ public class LoadingScreen extends ScreenAdapter {
 
             if(waitTime <= 0){
                 changeScreen = true;
-                //game.setScreen(new GameScreen(game));
             }
         }
     }
@@ -79,31 +86,10 @@ public class LoadingScreen extends ScreenAdapter {
         shapeRenderer.rect(progressBarX, progressBarY, PROGRESS_BAR_WIDTH * progress, PROGRESS_BAR_HEIGHT);
     }
 
-    private static void waitMillis(long millis){
-        try {
-            Thread.sleep(millis);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
-    }
-
-    @Override
-    public void show() {
-        camera = new OrthographicCamera();
-        viewport = new FillViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT, camera);
-        shapeRenderer = new ShapeRenderer();
-
-        assetManager.load(AssetDescriptors.FONT);
-        assetManager.load(AssetDescriptors.GAME_PLAY);
-        assetManager.load(AssetDescriptors.UI);
-
-        // blocks until all assets are loaded
-        //assetManager.finishLoading();
     }
 
     @Override

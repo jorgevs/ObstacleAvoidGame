@@ -28,10 +28,15 @@ public class ObstacleAvoidGame extends Game {
         setScreen(new LoadingScreen(this));
     }
 
+    public void render() {
+        super.render(); // Important!
+    }
+
     @Override
     public void dispose() {
         // dispose the actual com.mygdx.obstacleavoid.screen object
-        getScreen().dispose();
+        getScreen().dispose(); // Important!
+
         assetManager.dispose();
         spriteBatch.dispose();
     }

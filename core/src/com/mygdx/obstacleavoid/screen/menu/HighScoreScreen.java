@@ -40,19 +40,6 @@ public class HighScoreScreen extends ScreenAdapter {
     }
 
     @Override
-    public void render(float delta) {
-        GdxUtils.clearScreen();
-
-        stage.act();
-        stage.draw();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height, true);
-    }
-
-    @Override
     public void show() {
         viewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT);
         stage = new Stage(viewport, game.getSpriteBatch());
@@ -60,6 +47,14 @@ public class HighScoreScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
 
         createUI();
+    }
+
+    @Override
+    public void render(float delta) {
+        GdxUtils.clearScreen();
+
+        stage.act();
+        stage.draw();
     }
 
     private void createUI() {
@@ -120,7 +115,13 @@ public class HighScoreScreen extends ScreenAdapter {
     }
 
     @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
+    }
+
+    @Override
     public void hide() {
+        // NOTE: screens don't dispose automatically
         dispose();
     }
 

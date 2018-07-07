@@ -36,19 +36,6 @@ public class MenuScreen extends ScreenAdapter {
     }
 
     @Override
-    public void render(float delta) {
-        GdxUtils.clearScreen();
-
-        stage.act();
-        stage.draw();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height, true);
-    }
-
-    @Override
     public void show() {
         viewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT);
         stage = new Stage(viewport, game.getSpriteBatch());
@@ -56,6 +43,14 @@ public class MenuScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
 
         initUI();
+    }
+
+    @Override
+    public void render(float delta) {
+        GdxUtils.clearScreen();
+
+        stage.act();
+        stage.draw();
     }
 
     private void initUI() {
@@ -119,16 +114,6 @@ public class MenuScreen extends ScreenAdapter {
         stage.addActor(table);
     }
 
-    @Override
-    public void hide() {
-        dispose();
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
-    }
-
     private void play(){
         LOGGER.debug("play()");
         game.setScreen(new GameScreen(game));
@@ -148,5 +133,21 @@ public class MenuScreen extends ScreenAdapter {
         TextureRegion downRegion = textureAtlas.findRegion(downRegionName);
 
         return new ImageButton(new TextureRegionDrawable(upRegion), new TextureRegionDrawable(downRegion));
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
+    }
+
+    @Override
+    public void hide() {
+        // NOTE: screens don't dispose automatically
+        dispose();
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
     }
 }

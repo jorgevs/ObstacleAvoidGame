@@ -37,18 +37,8 @@ public class GameScreen extends ScreenAdapter {
     }
 
     @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
     public void hide() {
-        // important
+        // NOTE: screens don't dispose automatically
         dispose();
     }
 

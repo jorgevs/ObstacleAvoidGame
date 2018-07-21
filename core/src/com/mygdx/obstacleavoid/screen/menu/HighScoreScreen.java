@@ -79,7 +79,6 @@ public class HighScoreScreen extends MenuScreenBase {
         return table;
     }
 
-    //test
     private void back() {
         LOGGER.debug("back()");
         game.setScreen(new MenuScreen(game));

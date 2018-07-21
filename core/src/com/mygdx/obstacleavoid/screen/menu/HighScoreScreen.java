@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.obstacleavoid.ObstacleAvoidGame;
 import com.mygdx.obstacleavoid.assets.AssetDescriptors;
 import com.mygdx.obstacleavoid.assets.RegionNames;
+import com.mygdx.obstacleavoid.common.GameManager;
 import com.mygdx.obstacleavoid.config.GameConfig;
 import com.mygdx.obstacleavoid.util.GdxUtils;
 
@@ -79,7 +80,8 @@ public class HighScoreScreen extends ScreenAdapter {
         Label highScoreText = new Label("HIGHSCORE", labelStyle);
 
         // highscore label
-        Label highScoreLabel = new Label("100", labelStyle);
+        String highScoreString = GameManager.INSTANCE.getHighScoreString();
+        Label highScoreLabel = new Label(highScoreString, labelStyle);
 
         // back button
         ImageButton backButton = new ImageButton(new TextureRegionDrawable(backButtonRegion), new TextureRegionDrawable(backButtonPressedRegion));

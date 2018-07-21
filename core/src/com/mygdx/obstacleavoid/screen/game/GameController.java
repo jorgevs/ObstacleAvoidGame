@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import com.mygdx.obstacleavoid.common.GameManager;
 import com.mygdx.obstacleavoid.config.DifficultyLevel;
 import com.mygdx.obstacleavoid.config.GameConfig;
 import com.mygdx.obstacleavoid.entity.Background;
@@ -27,7 +28,6 @@ public class GameController {
     private int lives = GameConfig.LIVES_START;
     private int score;
     private int displayScore;
-    private DifficultyLevel difficultyLevel = DifficultyLevel.HARD;
 
     // player's initial position
     private final float startPlayerX = (GameConfig.WORLD_WIDTH - GameConfig.PLAYER_SIZE) / 2;
@@ -71,6 +71,7 @@ public class GameController {
 
             if (isGameOver()) {
                 LOGGER.debug("Game Over!!!");
+                GameManager.INSTANCE.updateHighScore(score);
             } else {
                 restart();
             }
@@ -170,6 +171,7 @@ public class GameController {
 
             //Obstacle obstacle = new Obstacle();
             Obstacle obstacle = obstaclePool.obtain();
+            DifficultyLevel difficultyLevel = GameManager.INSTANCE.getDifficultyLevel();
             obstacle.setSpeedY(difficultyLevel.getObstacleSpeed());
             obstacle.setPosition(obstacleX, obstacleY);
 

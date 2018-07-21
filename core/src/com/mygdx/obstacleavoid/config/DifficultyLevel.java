@@ -13,7 +13,19 @@ public enum DifficultyLevel {
         this.obstacleSpeed = obstacleSpeed;
     }
 
-    public float getObstacleSpeed(){
+    public float getObstacleSpeed() {
         return this.obstacleSpeed;
+    }
+
+    public boolean isEasy() {
+        return this == EASY;
+    }
+
+    public boolean isMedium() {
+        return this == MEDIUM;
+    }
+
+    public boolean isHard() {
+        return this == HARD;
     }
 }

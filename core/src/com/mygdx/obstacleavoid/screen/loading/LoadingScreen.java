@@ -14,11 +14,12 @@ import com.mygdx.obstacleavoid.util.GdxUtils;
 
 public class LoadingScreen extends ScreenAdapter {
 
-    // == constants ==
+    private final ObstacleAvoidGame game;
+    private final AssetManager assetManager;
+
     private static final float PROGRESS_BAR_WIDTH = GameConfig.HUD_WIDTH / 2f; // world units
     private static final float PROGRESS_BAR_HEIGHT = 60; // world units
 
-    // == attributes ==
     private OrthographicCamera camera;
     private Viewport viewport;
     private ShapeRenderer shapeRenderer;
@@ -27,16 +28,11 @@ public class LoadingScreen extends ScreenAdapter {
     private float waitTime = 0.75f;
     private boolean changeScreen = false;
 
-    private final ObstacleAvoidGame game;
-    private final AssetManager assetManager;
 
-    // == constructors ==
     public LoadingScreen(ObstacleAvoidGame game) {
         this.game = game;
         assetManager = game.getAssetManager();
     }
-
-    // == public methods ==
 
     @Override
     public void show() {
@@ -51,9 +47,8 @@ public class LoadingScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        update(delta);
-
         GdxUtils.clearScreen();
+        update(delta);
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

@@ -4,6 +4,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Logger;
 import com.mygdx.obstacleavoid.ObstacleAvoidGame;
+import com.mygdx.obstacleavoid.screen.menu.MenuScreen;
 
 public class GameScreen extends ScreenAdapter {
     private static final Logger LOGGER = new Logger(GameScreen.class.getName(), Logger.DEBUG);
@@ -29,6 +30,10 @@ public class GameScreen extends ScreenAdapter {
     public void render(float deltaTime) {
         controller.update(deltaTime);
         renderer.render(deltaTime);
+
+        if(controller.isGameOver()){
+            game.setScreen(new MenuScreen(game));
+        }
     }
 
     @Override

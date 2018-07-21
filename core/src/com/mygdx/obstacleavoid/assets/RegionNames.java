@@ -21,6 +21,7 @@ public class RegionNames {
     public  static final String PANEL = "panel";
     public  static final String PLAY = "play";
     public  static final String PLAY_PRESSED = "playPressed";
+
     private RegionNames(){
 
     }

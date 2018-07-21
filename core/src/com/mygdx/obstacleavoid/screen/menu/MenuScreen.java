@@ -126,6 +126,7 @@ public class MenuScreen extends ScreenAdapter {
 
     private void showOptions(){
         LOGGER.debug("showOptions()");
+        game.setScreen(new OptionsScreen(game));
     }
 
     private static ImageButton createButton(TextureAtlas textureAtlas, String upRegionName, String downRegionName) {

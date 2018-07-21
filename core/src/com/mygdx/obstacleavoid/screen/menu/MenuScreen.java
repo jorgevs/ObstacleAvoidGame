@@ -1,59 +1,27 @@
 package com.mygdx.obstacleavoid.screen.menu;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Logger;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.obstacleavoid.ObstacleAvoidGame;
 import com.mygdx.obstacleavoid.assets.AssetDescriptors;
 import com.mygdx.obstacleavoid.assets.RegionNames;
-import com.mygdx.obstacleavoid.config.GameConfig;
 import com.mygdx.obstacleavoid.screen.game.GameScreen;
-import com.mygdx.obstacleavoid.util.GdxUtils;
 
-public class MenuScreen extends ScreenAdapter {
+public class MenuScreen extends MenuScreenBase {
     private static final Logger LOGGER = new Logger(MenuScreen.class.getName(), Logger.DEBUG);
 
-    private final ObstacleAvoidGame game;
-    private final AssetManager assetManager;
-
-    private Viewport viewport;
-    private Stage stage;
-
     public MenuScreen(ObstacleAvoidGame game) {
-        this.game = game;
-        this.assetManager = game.getAssetManager();
+        super(game);
     }
 
     @Override
-    public void show() {
-        viewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT);
-        stage = new Stage(viewport, game.getSpriteBatch());
-
-        Gdx.input.setInputProcessor(stage);
-
-        initUI();
-    }
-
-    @Override
-    public void render(float delta) {
-        GdxUtils.clearScreen();
-
-        stage.act();
-        stage.draw();
-    }
-
-    private void initUI() {
+    protected Actor createUI() {
         Table table = new Table();
 
         TextureAtlas gamePlayAtlas = assetManager.get(AssetDescriptors.GAME_PLAY);
@@ -92,7 +60,7 @@ public class MenuScreen extends ScreenAdapter {
         });
 
         // quit button
-
+        // TODO add this button
 
         // setup table
         Table buttonTable = new Table();
@@ -111,20 +79,20 @@ public class MenuScreen extends ScreenAdapter {
         table.setFillParent(true);
         table.pack();
 
-        stage.addActor(table);
+        return table;
     }
 
-    private void play(){
+    private void play() {
         LOGGER.debug("play()");
         game.setScreen(new GameScreen(game));
     }
 
-    private void showHighScore(){
+    private void showHighScore() {
         LOGGER.debug("showHighScore()");
         game.setScreen(new HighScoreScreen(game));
     }
 
-    private void showOptions(){
+    private void showOptions() {
         LOGGER.debug("showOptions()");
         game.setScreen(new OptionsScreen(game));
     }
@@ -136,19 +104,4 @@ public class MenuScreen extends ScreenAdapter {
         return new ImageButton(new TextureRegionDrawable(upRegion), new TextureRegionDrawable(downRegion));
     }
 
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height, true);
-    }
-
-    @Override
-    public void hide() {
-        // NOTE: screens don't dispose automatically
-        dispose();
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
-    }
 }

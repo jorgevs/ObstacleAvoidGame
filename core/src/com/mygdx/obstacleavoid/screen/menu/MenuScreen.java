@@ -1,10 +1,12 @@
 package com.mygdx.obstacleavoid.screen.menu;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Logger;
@@ -25,15 +27,13 @@ public class MenuScreen extends MenuScreenBase {
         Table table = new Table();
 
         TextureAtlas gamePlayAtlas = assetManager.get(AssetDescriptors.GAME_PLAY);
-        TextureAtlas uiAtlas = assetManager.get(AssetDescriptors.UI);
-
+        Skin skin = assetManager.get(AssetDescriptors.SKIN);
         TextureRegion backgroundTextureRegion = gamePlayAtlas.findRegion(RegionNames.BACKGROUND);
-        TextureRegion panelTextureRegion = uiAtlas.findRegion(RegionNames.PANEL);
 
         table.setBackground(new TextureRegionDrawable(backgroundTextureRegion));
 
         // play button
-        ImageButton playButton = createButton(uiAtlas, RegionNames.PLAY, RegionNames.PLAY_PRESSED);
+        TextButton playButton = new TextButton("PLAY", skin);
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -42,8 +42,8 @@ public class MenuScreen extends MenuScreenBase {
         });
 
         // highscore button
-        ImageButton highscoreButton = createButton(uiAtlas, RegionNames.HIGH_SCORE, RegionNames.HIGH_SCORE_PRESSED);
-        highscoreButton.addListener(new ChangeListener() {
+        TextButton highScoreButton = new TextButton("HIGH SCORE", skin);
+        highScoreButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 showHighScore();
@@ -51,7 +51,7 @@ public class MenuScreen extends MenuScreenBase {
         });
 
         // options button
-        ImageButton optionsButton = createButton(uiAtlas, RegionNames.OPTIONS, RegionNames.OPTIONS_PRESSED);
+        TextButton optionsButton = new TextButton("OPTIONS", skin);
         optionsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -60,16 +60,23 @@ public class MenuScreen extends MenuScreenBase {
         });
 
         // quit button
-        // TODO add this button
+        TextButton quitButton = new TextButton("QUIT", skin);
+        quitButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                quit();
+            }
+        });
 
         // setup table
-        Table buttonTable = new Table();
+        Table buttonTable = new Table(skin);
         buttonTable.defaults().pad(20);
-        buttonTable.setBackground(new TextureRegionDrawable(panelTextureRegion));
+        buttonTable.setBackground(RegionNames.PANEL);
 
         buttonTable.add(playButton).row();
-        buttonTable.add(highscoreButton).row();
+        buttonTable.add(highScoreButton).row();
         buttonTable.add(optionsButton).row();
+        buttonTable.add(quitButton).row();
 
         buttonTable.center();
 
@@ -97,11 +104,8 @@ public class MenuScreen extends MenuScreenBase {
         game.setScreen(new OptionsScreen(game));
     }
 
-    private static ImageButton createButton(TextureAtlas textureAtlas, String upRegionName, String downRegionName) {
-        TextureRegion upRegion = textureAtlas.findRegion(upRegionName);
-        TextureRegion downRegion = textureAtlas.findRegion(downRegionName);
-
-        return new ImageButton(new TextureRegionDrawable(upRegion), new TextureRegionDrawable(downRegion));
+    private void quit() {
+        LOGGER.debug("quit()");
+        Gdx.app.exit();
     }
-
 }

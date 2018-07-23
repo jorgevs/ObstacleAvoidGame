@@ -22,7 +22,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        controller = new GameController();
+        controller = new GameController(game);
         renderer = new GameRenderer(game.getSpriteBatch(), assetManager, controller);
     }
 

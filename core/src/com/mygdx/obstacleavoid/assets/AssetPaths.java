@@ -8,6 +8,8 @@ public class AssetPaths {
 
     public static final String SKIN = "skin/skin.json";
 
+    public static final String HIT = "sounds/hit.wav";
+
     private AssetPaths(){
     }
 }

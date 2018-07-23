@@ -2,11 +2,15 @@ package com.mygdx.obstacleavoid.screen.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import com.mygdx.obstacleavoid.ObstacleAvoidGame;
+import com.mygdx.obstacleavoid.assets.AssetDescriptors;
 import com.mygdx.obstacleavoid.common.GameManager;
 import com.mygdx.obstacleavoid.config.DifficultyLevel;
 import com.mygdx.obstacleavoid.config.GameConfig;
@@ -22,6 +26,7 @@ public class GameController {
     private Array<Obstacle> obstacles;
     private Pool<Obstacle> obstaclePool;
     private Background background;
+    private Sound hit;
 
     private float obstacleTimer;
     private float scoreTimer;
@@ -33,9 +38,14 @@ public class GameController {
     private final float startPlayerX = (GameConfig.WORLD_WIDTH - GameConfig.PLAYER_SIZE) / 2;
     private final float startPlayerY = 1 - (GameConfig.PLAYER_SIZE / 2);
 
+    private final ObstacleAvoidGame game;
+    private final AssetManager assetManager;
 
     // == constructors ==
-    public GameController() {
+    public GameController(ObstacleAvoidGame game) {
+        this.game = game;
+        this.assetManager = game.getAssetManager();
+
         init();
     }
 
@@ -52,6 +62,8 @@ public class GameController {
         background = new Background();
         background.setPosition(0, 0);
         background.setSize(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT);
+
+        hit = assetManager.get(AssetDescriptors.HIT_SOUND);
     }
 
     // == public methods ==
@@ -112,6 +124,7 @@ public class GameController {
     private boolean isPlayerCollidingWithObstacle() {
         for (Obstacle obstacle : obstacles) {
             if (!obstacle.isHit() && obstacle.isPlayerColliding(player)) {
+                hit.play();
                 return true;
             }
         }

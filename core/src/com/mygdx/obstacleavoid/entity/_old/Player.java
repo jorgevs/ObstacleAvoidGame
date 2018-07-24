@@ -1,7 +1,8 @@
-package com.mygdx.obstacleavoid.entity;
+package com.mygdx.obstacleavoid.entity._old;
 
 import com.mygdx.obstacleavoid.config.GameConfig;
 
+@Deprecated
 public class Player extends GameObjectBase {
 
     public Player() {

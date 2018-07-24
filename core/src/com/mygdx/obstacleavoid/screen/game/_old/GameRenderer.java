@@ -1,4 +1,4 @@
-package com.mygdx.obstacleavoid.screen.game;
+package com.mygdx.obstacleavoid.screen.game._old;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -14,15 +14,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.obstacleavoid.assets.AssetDescriptors;
 import com.mygdx.obstacleavoid.assets.RegionNames;
 import com.mygdx.obstacleavoid.config.GameConfig;
-import com.mygdx.obstacleavoid.entity.Background;
-import com.mygdx.obstacleavoid.entity.Obstacle;
-import com.mygdx.obstacleavoid.entity.Player;
+import com.mygdx.obstacleavoid.entity._old.Background;
+import com.mygdx.obstacleavoid.entity._old.Obstacle;
+import com.mygdx.obstacleavoid.entity._old.Player;
 import com.mygdx.obstacleavoid.util.GdxUtils;
 import com.mygdx.obstacleavoid.util.ViewportUtils;
 import com.mygdx.obstacleavoid.util.debug.DebugCameraController;
 
-import javax.swing.*;
-
+@Deprecated
 public class GameRenderer implements Disposable {
     private static final Logger LOGGER = new Logger(GameRenderer.class.getName(), Logger.DEBUG);
 

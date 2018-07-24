@@ -1,8 +1,9 @@
-package com.mygdx.obstacleavoid.entity;
+package com.mygdx.obstacleavoid.entity._old;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 
+@Deprecated
 public abstract class GameObjectBase {
 
     private float x;

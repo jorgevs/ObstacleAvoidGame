@@ -1,4 +1,4 @@
-package com.mygdx.obstacleavoid.screen.game;
+package com.mygdx.obstacleavoid.screen.game._old;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -14,10 +14,11 @@ import com.mygdx.obstacleavoid.assets.AssetDescriptors;
 import com.mygdx.obstacleavoid.common.GameManager;
 import com.mygdx.obstacleavoid.config.DifficultyLevel;
 import com.mygdx.obstacleavoid.config.GameConfig;
-import com.mygdx.obstacleavoid.entity.Background;
-import com.mygdx.obstacleavoid.entity.Obstacle;
-import com.mygdx.obstacleavoid.entity.Player;
+import com.mygdx.obstacleavoid.entity._old.Background;
+import com.mygdx.obstacleavoid.entity._old.Obstacle;
+import com.mygdx.obstacleavoid.entity._old.Player;
 
+@Deprecated
 public class GameController {
     private static final Logger LOGGER = new Logger(GameController.class.getName(), Logger.DEBUG);
 

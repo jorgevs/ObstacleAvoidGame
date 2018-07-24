@@ -1,5 +1,6 @@
-package com.mygdx.obstacleavoid.entity;
+package com.mygdx.obstacleavoid.entity._old;
 
+@Deprecated
 public class Background {
 
     private float x;

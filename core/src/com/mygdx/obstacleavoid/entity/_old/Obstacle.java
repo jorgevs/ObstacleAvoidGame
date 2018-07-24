@@ -1,9 +1,9 @@
-package com.mygdx.obstacleavoid.entity;
+package com.mygdx.obstacleavoid.entity._old;
 
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.Pool;
 import com.mygdx.obstacleavoid.config.GameConfig;
 
+@Deprecated
 public class Obstacle extends GameObjectBase implements Pool.Poolable {
 
     private float speedY = GameConfig.MEDIUM_OBSTABLE_SPEED;

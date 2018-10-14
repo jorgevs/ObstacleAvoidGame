@@ -38,14 +38,11 @@ public class GameController {
     private final float startPlayerX = (GameConfig.WORLD_WIDTH - GameConfig.PLAYER_SIZE) / 2;
     private final float startPlayerY = 1 - (GameConfig.PLAYER_SIZE / 2);
 
-    private final ObstacleAvoidGame game;
     private final AssetManager assetManager;
 
     // == constructors ==
-    public GameController(ObstacleAvoidGame game) {
-        this.game = game;
-        this.assetManager = game.getAssetManager();
-
+    public GameController(AssetManager assetManager) {
+        this.assetManager = assetManager;
         init();
     }
 

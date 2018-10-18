@@ -6,14 +6,22 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.obstacleavoid.ObstacleAvoidGame;
 import com.mygdx.obstacleavoid.assets.AssetDescriptors;
 import com.mygdx.obstacleavoid.assets.RegionNames;
+import com.mygdx.obstacleavoid.common.GameManager;
+import com.mygdx.obstacleavoid.config.DifficultyLevel;
 import com.mygdx.obstacleavoid.config.GameConfig;
+import com.mygdx.obstacleavoid.entity.ObstacleActor;
 import com.mygdx.obstacleavoid.entity.PlayerActor;
+import com.mygdx.obstacleavoid.entity._old.Obstacle;
 import com.mygdx.obstacleavoid.util.GdxUtils;
 import com.mygdx.obstacleavoid.util.ViewportUtils;
 import com.mygdx.obstacleavoid.util.debug.DebugCameraController;
@@ -47,8 +55,11 @@ public class GameScreen extends ScreenAdapter {
     private float startPlayerY = GameConfig.PLAYER_SIZE / 2;
 
     private DebugCameraController debugCameraController;
+    private TextureRegion obstacleRegion;
 
     private PlayerActor player;
+    private final Array<ObstacleActor> obstacles = new Array<ObstacleActor>();
+    private final Pool<ObstacleActor> obstaclePool = Pools.get(ObstacleActor.class);
 
     public GameScreen(ObstacleAvoidGame game) {
         this.game = game;
@@ -74,6 +85,8 @@ public class GameScreen extends ScreenAdapter {
 
         TextureAtlas gamePlayAtlas = assetManager.get(AssetDescriptors.GAME_PLAY);
         TextureRegion playerRegion = gamePlayAtlas.findRegion(RegionNames.PLAYER);
+        obstacleRegion = gamePlayAtlas.findRegion(RegionNames.OBSTACLE);
+
 
         player = new PlayerActor();
         player.setPosition(startPlayerX, startPlayerY);
@@ -88,6 +101,8 @@ public class GameScreen extends ScreenAdapter {
         debugCameraController.handleDebugInput(delta);
         debugCameraController.applyTo(camera);
 
+        update(delta);
+
         // Clear the screen
         GdxUtils.clearScreen();
 
@@ -99,6 +114,48 @@ public class GameScreen extends ScreenAdapter {
 
         viewport.apply();
         renderDebug();
+    }
+
+    private void update(float delta){
+        createNewObstacle(delta);
+        removePassedObstacles();
+    }
+
+    private void createNewObstacle(float delta) {
+        obstacleTimer += delta;
+
+        if (obstacleTimer >= GameConfig.OBSTACLE_SPAWN_TIME) {
+            float min = 0f;
+            float max = GameConfig.WORLD_WIDTH - GameConfig.OBSTACLE_SIZE;
+            float obstacleX = MathUtils.random(min, max);
+            float obstacleY = GameConfig.WORLD_HEIGHT;
+
+            //Obstacle obstacle = new Obstacle();
+            ObstacleActor obstacle = obstaclePool.obtain();
+            DifficultyLevel difficultyLevel = GameManager.INSTANCE.getDifficultyLevel();
+            obstacle.setYSpeed(difficultyLevel.getObstacleSpeed());
+            obstacle.setPosition(obstacleX, obstacleY);
+            obstacle.setTextureRegion(obstacleRegion);
+
+            obstacles.add(obstacle);
+            stage.addActor(obstacle);
+            // reset the obstacle timer
+            obstacleTimer = 0.0f;
+        }
+    }
+
+    private void removePassedObstacles() {
+        if (obstacles.size > 0) {
+            float minObstacleY = (0 - GameConfig.OBSTACLE_SIZE);
+            ObstacleActor obstacle = obstacles.first();
+            if (obstacle.getY() < minObstacleY) {
+                obstacles.removeValue(obstacle, true);
+                // Removes actor from parent / stage
+                obstacle.remove();
+                // Returning to pool
+                obstaclePool.free(obstacle);
+            }
+        }
     }
 
     @Override

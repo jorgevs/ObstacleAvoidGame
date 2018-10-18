@@ -40,6 +40,10 @@ public abstract class ActorBase extends Actor {
                 getRotation());
     }
 
+    public Circle getCollisionShape() {
+        return collisionShape;
+    }
+
     @Override
     protected void drawDebugBounds(ShapeRenderer shapeRenderer) {
         if (!getDebug()) {

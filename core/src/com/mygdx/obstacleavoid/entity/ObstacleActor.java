@@ -32,7 +32,11 @@ public class ObstacleActor extends ActorBase implements Pool.Poolable {
     public boolean isPlayerColliding(PlayerActor player) {
         Circle playerBounds  = player.getCollisionShape();
         boolean overlaps = Intersector.overlaps(playerBounds, getCollisionShape());
-        hit = overlaps;
+
+        if (overlaps) {
+            hit = true;
+        }
+
         return overlaps;
     }
 

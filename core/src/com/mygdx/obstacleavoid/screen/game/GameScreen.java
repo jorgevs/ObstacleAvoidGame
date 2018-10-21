@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
@@ -21,10 +22,12 @@ import com.mygdx.obstacleavoid.config.DifficultyLevel;
 import com.mygdx.obstacleavoid.config.GameConfig;
 import com.mygdx.obstacleavoid.entity.ObstacleActor;
 import com.mygdx.obstacleavoid.entity.PlayerActor;
-import com.mygdx.obstacleavoid.entity._old.Obstacle;
+import com.mygdx.obstacleavoid.screen.menu.MenuScreen;
 import com.mygdx.obstacleavoid.util.GdxUtils;
 import com.mygdx.obstacleavoid.util.ViewportUtils;
 import com.mygdx.obstacleavoid.util.debug.DebugCameraController;
+
+import java.util.Iterator;
 
 public class GameScreen extends ScreenAdapter {
 
@@ -49,15 +52,17 @@ public class GameScreen extends ScreenAdapter {
     private int lives = GameConfig.LIVES_START;
     private int score;
     private int displayScore;
-    private Sound hitsound;
+    private Sound hitSound;
 
     private float startPlayerX = (GameConfig.WORLD_WIDTH - GameConfig.PLAYER_SIZE) / 2;
     private float startPlayerY = GameConfig.PLAYER_SIZE / 2;
 
     private DebugCameraController debugCameraController;
     private TextureRegion obstacleRegion;
+    private TextureRegion backgroundRegion;
 
     private PlayerActor player;
+
     private final Array<ObstacleActor> obstacles = new Array<ObstacleActor>();
     private final Pool<ObstacleActor> obstaclePool = Pools.get(ObstacleActor.class);
 
@@ -83,15 +88,22 @@ public class GameScreen extends ScreenAdapter {
         debugCameraController = new DebugCameraController();
         debugCameraController.setStartPosition(GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y);
 
+        hitSound = assetManager.get(AssetDescriptors.HIT_SOUND);
+
         TextureAtlas gamePlayAtlas = assetManager.get(AssetDescriptors.GAME_PLAY);
         TextureRegion playerRegion = gamePlayAtlas.findRegion(RegionNames.PLAYER);
         obstacleRegion = gamePlayAtlas.findRegion(RegionNames.OBSTACLE);
+        backgroundRegion = gamePlayAtlas.findRegion(RegionNames.BACKGROUND);
 
+        // For static images, it is better to use the Image class (extends Actor) instead of creating an Actor
+        Image background = new Image(backgroundRegion);
+        background.setSize(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT);
 
         player = new PlayerActor();
         player.setPosition(startPlayerX, startPlayerY);
         player.setTextureRegion(playerRegion);
 
+        stage.addActor(background);
         stage.addActor(player);
     }
 
@@ -114,11 +126,32 @@ public class GameScreen extends ScreenAdapter {
 
         viewport.apply();
         renderDebug();
+
+        if (isGameOver()){
+            game.setScreen(new MenuScreen(game));
+        }
     }
 
     private void update(float delta){
+        if (isGameOver()){
+            return;
+        }
+
         createNewObstacle(delta);
         removePassedObstacles();
+
+        updateScore(delta);
+        updateDisplayScore(delta);
+
+        if (isPlayerCollidingWithObstacle()){
+            lives--;
+
+            if (isGameOver()){
+                GameManager.INSTANCE.updateHighScore(score);
+            }else{
+                restart();
+            }
+        }
     }
 
     private void createNewObstacle(float delta) {
@@ -183,7 +216,6 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void drawGamePlay() {
-
     }
 
     private void renderUI() {
@@ -207,17 +239,53 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void renderDebug() {
-        shapeRenderer.setProjectionMatrix(camera.combined);
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        drawDebug();
-        shapeRenderer.end();
-
         // draw grid
         ViewportUtils.drawGrid(viewport, shapeRenderer);
     }
 
-    private void drawDebug() {
+    public boolean isGameOver() {
+        return lives <= 0;
+    }
 
+    // == private methods ==
+    private void restart() {
+        Iterator<ObstacleActor> iterator = obstacles.iterator();
+        while(iterator.hasNext()){
+            ObstacleActor obstacle = iterator.next();
+
+            // remove obstacles from stage (parent)
+            obstacle.remove();
+
+            // return to pool
+            obstaclePool.free(obstacle);
+
+            iterator.remove();
+        }
+        player.setPosition(startPlayerX, startPlayerY);
+    }
+
+    private boolean isPlayerCollidingWithObstacle() {
+        for (ObstacleActor obstacle : obstacles) {
+            if (!obstacle.isHit() && obstacle.isPlayerColliding(player)) {
+                hitSound.play();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void updateScore(float deltaTime) {
+        scoreTimer += deltaTime;
+
+        if (scoreTimer >= GameConfig.SCORE_MAX_TIME) {
+            score += MathUtils.random(0, 5);
+            scoreTimer = 0.0f;
+        }
+    }
+
+    private void updateDisplayScore(float deltaTime) {
+        if (displayScore < score) {
+            displayScore = Math.min(score, displayScore + (int) (60 * deltaTime));   // 60 frames per second
+        }
     }
 }

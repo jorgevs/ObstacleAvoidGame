@@ -4,8 +4,6 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Pool;
 import com.mygdx.obstacleavoid.config.GameConfig;
-import com.mygdx.obstacleavoid.entity._old.Obstacle;
-import com.mygdx.obstacleavoid.entity._old.Player;
 
 public class ObstacleActor extends ActorBase implements Pool.Poolable {
 
@@ -34,8 +32,12 @@ public class ObstacleActor extends ActorBase implements Pool.Poolable {
     public boolean isPlayerColliding(PlayerActor player) {
         Circle playerBounds  = player.getCollisionShape();
         boolean overlaps = Intersector.overlaps(playerBounds, getCollisionShape());
-        hit = true;
+        hit = overlaps;
         return overlaps;
+    }
+
+    public boolean isHit(){
+        return hit;
     }
 
     @Override

@@ -17,8 +17,8 @@ public class GameManager {
 
 
     private Preferences PREFS;
-    private int highScore = 0;
-    private DifficultyLevel difficultyLevel = DifficultyLevel.MEDIUM;
+    private int highScore;
+    private DifficultyLevel difficultyLevel;
 
 
     private GameManager() {
@@ -51,6 +51,5 @@ public class GameManager {
             PREFS.putString(DIFFICULTY_KEY, difficultyLevel.name());
             PREFS.flush();
         }
-
     }
 }

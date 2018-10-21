@@ -82,7 +82,6 @@ public class LoadingScreen extends ScreenAdapter {
         shapeRenderer.rect(progressBarX, progressBarY, PROGRESS_BAR_WIDTH * progress, PROGRESS_BAR_HEIGHT);
     }
 
-
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);

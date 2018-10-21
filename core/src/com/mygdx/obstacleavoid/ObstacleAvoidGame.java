@@ -7,8 +7,6 @@ import com.badlogic.gdx.assets.AssetManager;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Logger;
-import com.mygdx.obstacleavoid.common.GameManager;
-import com.mygdx.obstacleavoid.screen.game.GameScreen;
 import com.mygdx.obstacleavoid.screen.loading.LoadingScreen;
 
 public class ObstacleAvoidGame extends Game {

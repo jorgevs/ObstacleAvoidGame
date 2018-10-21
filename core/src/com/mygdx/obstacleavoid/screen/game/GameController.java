@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
-import com.mygdx.obstacleavoid.ObstacleAvoidGame;
 import com.mygdx.obstacleavoid.assets.AssetDescriptors;
 import com.mygdx.obstacleavoid.common.GameManager;
 import com.mygdx.obstacleavoid.config.DifficultyLevel;

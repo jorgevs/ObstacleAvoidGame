@@ -1,6 +1,5 @@
 package com.mygdx.obstacleavoid.entity;
 
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.Pool;
 import com.mygdx.obstacleavoid.config.GameConfig;
 

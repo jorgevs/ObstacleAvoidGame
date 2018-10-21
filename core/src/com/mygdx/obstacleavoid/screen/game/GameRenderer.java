@@ -21,7 +21,6 @@ import com.mygdx.obstacleavoid.util.GdxUtils;
 import com.mygdx.obstacleavoid.util.ViewportUtils;
 import com.mygdx.obstacleavoid.util.debug.DebugCameraController;
 
-import javax.swing.*;
 
 public class GameRenderer implements Disposable {
     private static final Logger LOGGER = new Logger(GameRenderer.class.getName(), Logger.DEBUG);
@@ -189,13 +188,4 @@ public class GameRenderer implements Disposable {
         }
     }
 
-    private boolean isPlayerCollidingWithObstacle() {
-        for (Obstacle obstacle : gameController.getObstacles()) {
-            if (!obstacle.isHit() && obstacle.isPlayerColliding(gameController.getPlayer())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

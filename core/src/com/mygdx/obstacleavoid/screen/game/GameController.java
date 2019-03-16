@@ -2,15 +2,13 @@ package com.mygdx.obstacleavoid.screen.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
 import com.mygdx.obstacleavoid.ObstacleAvoidGame;
 import com.mygdx.obstacleavoid.assets.AssetDescriptors;
+import com.mygdx.obstacleavoid.common.EntityFactory;
 import com.mygdx.obstacleavoid.common.GameManager;
 import com.mygdx.obstacleavoid.config.DifficultyLevel;
 import com.mygdx.obstacleavoid.config.GameConfig;
@@ -24,7 +22,7 @@ public class GameController {
     // == attributes ==
     private Player player;
     private Array<Obstacle> obstacles;
-    private Pool<Obstacle> obstaclePool;
+
     private Background background;
     private Sound hit;
 
@@ -39,31 +37,29 @@ public class GameController {
     private final float startPlayerY = 1 - (GameConfig.PLAYER_SIZE / 2);
 
     private final ObstacleAvoidGame game;
-    private final AssetManager assetManager;
+
+    private final EntityFactory entityFactory;
 
     // == constructors ==
     public GameController(ObstacleAvoidGame game) {
         this.game = game;
-        this.assetManager = game.getAssetManager();
+        entityFactory = new EntityFactory(game.getAssetManager());
 
         init();
     }
 
     // == init ==
     private void init() {
-        player = new Player();
+        player = entityFactory.createPlayer();
         player.setPosition(startPlayerX, startPlayerY);
 
         // obstacles
         obstacles = new Array<Obstacle>();
-        obstaclePool = Pools.get(Obstacle.class, 20);
 
         // background
-        background = new Background();
-        background.setPosition(0, 0);
-        background.setSize(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT);
+        background = entityFactory.createBackground();
 
-        hit = assetManager.get(AssetDescriptors.HIT_SOUND);
+        hit = game.getAssetManager().get(AssetDescriptors.HIT_SOUND);
     }
 
     // == public methods ==
@@ -116,7 +112,7 @@ public class GameController {
 
     // == private methods ==
     private void restart() {
-        obstaclePool.freeAll(obstacles);
+        entityFactory.freeAll(obstacles);
         obstacles.clear();
         player.setPosition(startPlayerX, startPlayerY);
     }
@@ -128,7 +124,6 @@ public class GameController {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -183,7 +178,7 @@ public class GameController {
             float obstacleY = GameConfig.WORLD_HEIGHT;
 
             //Obstacle obstacle = new Obstacle();
-            Obstacle obstacle = obstaclePool.obtain();
+            Obstacle obstacle = entityFactory.obtain();
             DifficultyLevel difficultyLevel = GameManager.INSTANCE.getDifficultyLevel();
             obstacle.setSpeedY(difficultyLevel.getObstacleSpeed());
             obstacle.setPosition(obstacleX, obstacleY);
@@ -196,18 +191,11 @@ public class GameController {
 
     private void removePassedObstacles() {
         if (obstacles.size > 0) {
-            /*Iterator iterator = obstacles.iterator();
-            while (iterator.hasNext()) {
-                Obstacle obstacle = (Obstacle) iterator.next();
-                if (obstacle.getY() < 0) {
-                    iterator.remove();
-                }
-            }*/
             float minObstacleY = (0 - GameConfig.OBSTACLE_SIZE);
             Obstacle obstacle = obstacles.first();
             if (obstacle.getY() < minObstacleY) {
                 obstacles.removeValue(obstacle, true);
-                obstaclePool.free(obstacle);
+                entityFactory.free(obstacle);
             }
         }
     }

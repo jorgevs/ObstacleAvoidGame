@@ -1,5 +1,7 @@
 ## Java
 
+core/out/
+
 *.class
 *.war
 *.ear

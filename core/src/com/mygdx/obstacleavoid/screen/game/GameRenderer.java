@@ -39,8 +39,6 @@ public class GameRenderer implements Disposable {
     private final AssetManager assetManager;
     private final SpriteBatch spriteBatch;
 
-    private TextureRegion playerRegion;
-    private TextureRegion obstacleRegion;
     private TextureRegion backgroundRegion;
 
     private DebugCameraController debugCameraController;
@@ -66,11 +64,7 @@ public class GameRenderer implements Disposable {
         font = assetManager.get(AssetDescriptors.FONT);
 
         TextureAtlas gamePlayAtlas = assetManager.get(AssetDescriptors.GAME_PLAY);
-
-        playerRegion = gamePlayAtlas.findRegion(RegionNames.PLAYER);
-        obstacleRegion = gamePlayAtlas.findRegion(RegionNames.OBSTACLE);
         backgroundRegion = gamePlayAtlas.findRegion(RegionNames.BACKGROUND);
-
 
         debugCameraController = new DebugCameraController();
         debugCameraController.setStartPosition(GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y);
@@ -86,7 +80,7 @@ public class GameRenderer implements Disposable {
         debugCameraController.applyTo(camera);
 
         // adding screen touch controls
-        if(Gdx.input.isTouched() && !gameController.isGameOver()){
+        if (Gdx.input.isTouched() && !gameController.isGameOver()) {
             Vector2 screenTouch = new Vector2(Gdx.input.getX(), Gdx.input.getY());
             Vector2 worldTouch = viewport.unproject(new Vector2(screenTouch));
 
@@ -141,11 +135,11 @@ public class GameRenderer implements Disposable {
 
         // draw player
         Player player = gameController.getPlayer();
-        spriteBatch.draw(playerRegion, player.getX(), player.getY(), player.getWidth(), player.getHeight());
+        player.draw(spriteBatch);
 
         // draw obstacles
         for (Obstacle obstacle : gameController.getObstacles()) {
-            spriteBatch.draw(obstacleRegion, obstacle.getX(), obstacle.getY(), obstacle.getWidth(), obstacle.getHeight());
+            obstacle.draw(spriteBatch);
         }
 
     }

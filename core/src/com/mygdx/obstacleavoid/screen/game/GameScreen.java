@@ -15,7 +15,7 @@ public class GameScreen extends ScreenAdapter {
     private GameController controller;
     private GameRenderer renderer;
 
-    public GameScreen(ObstacleAvoidGame game){
+    public GameScreen(ObstacleAvoidGame game) {
         this.game = game;
         this.assetManager = game.getAssetManager();
     }
@@ -31,7 +31,7 @@ public class GameScreen extends ScreenAdapter {
         controller.update(deltaTime);
         renderer.render(deltaTime);
 
-        if(controller.isGameOver()){
+        if (controller.isGameOver()) {
             game.setScreen(new MenuScreen(game));
         }
     }
